@@ -10,7 +10,8 @@
 
 
 3. 7 Segment Interfacing (Normal/Multiplexing)
--
+- Displaying a counter from 00 - 99 in an endless loop.
+
 
 4. Potentiometer (ADC) Interfacing 
 - Displaying ADC value + Voltage value from a POT on LCD display.
