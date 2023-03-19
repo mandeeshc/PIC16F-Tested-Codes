@@ -1,0 +1,125 @@
+//===============================================================
+#define _XTAL_FREQ 20e6
+#include <xc.h>
+#define ms __delay_ms
+#define LCD PORTD
+#define RS RC0	     //LCD Register Select
+#define EN RC1	     //LCD Enable
+
+//Function Declarations
+void interruptInit();
+void lcdDelay(unsigned int);
+void lcdData(unsigned char);
+void lcdCmd(char);
+void lcdClr();
+void lcdString(const char *);
+
+/************************ INTERRUPTS ************************/
+void interrupt interrupt_src(void)		// Software Polling for Interrupt Source
+{
+   if(INTF)  // Wait until External Interrupt occurs
+   {
+      INTF=0; // Reset the external interrupt flag
+      lcdCmd(0x80);
+      lcdString("RB0 Interrupt");
+      lcdCmd(0xC0);
+      lcdString("   Detected   ");
+      ms(1000);
+      lcdClr(); 
+   }   
+}
+
+//Initialize Interrupts
+void interruptInit()
+{
+    OPTION_REG = 0x00;  //Falling Edge on RB0, Pull up enabled internally
+    INTE = 1;                     // Enable the RB0/INT external interrupt
+    //PEIE = 1;                  // Enable the Peripheral Interrupts
+    GIE  = 1;   	              // Enable The Global Interrupt
+}
+
+
+void lcdInit()
+{
+    RS=0;
+    lcdCmd(0x38);
+    lcdCmd(0x01);
+    lcdCmd(0x0C);
+    lcdCmd(0x06);
+    lcdCmd(0x80);
+    EN=1;
+    lcdDelay(20);
+    EN=0;
+}
+
+void lcdData(unsigned char dta)
+{
+    RS=1;
+    LCD = dta;
+    EN=1;
+    lcdDelay(20);
+    EN=0;
+}
+
+void lcdCmd(char cmmd)
+{
+    RS=0;
+    LCD = cmmd;
+    EN=1;
+    lcdDelay(20);
+    EN=0;
+}
+
+
+void lcdDelay(unsigned int DD)
+{
+    unsigned int i,j;
+    for(i=1;i<=DD;i++)
+    {
+    for(j=1;j<=50;j++);
+    }
+}
+
+void lcdClr()
+{
+    lcdCmd(0x01);
+    lcdCmd(0x80);
+}
+
+void lcdString(const char *dat)
+{
+    while(*dat)
+    lcdData(*dat++);
+}
+
+void gpioInit()
+{
+    TRISC  = 0b11111000;
+    TRISD  = 0x00;
+    PORTC =  0xFF;
+}
+
+
+
+void main(void)
+{
+    gpioInit();  //Initialize GPIO   
+    interruptInit();
+    lcdInit();  
+    lcdClr();
+    lcdString("Embedded Systems");
+    lcdCmd(0xC0);
+    lcdString("   BITS PILANI        ");
+    ms(1000);
+    lcdClr();
+    lcdString("Externl Interupt");
+    lcdCmd(0xC0);
+    lcdString("    Example     ");
+    ms(1000);
+    lcdClr();
+    
+    while(1)
+    {
+       
+    }
+}
