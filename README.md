@@ -16,3 +16,7 @@
 4. Potentiometer (ADC) Interfacing 
 - Displaying ADC value + Voltage value from a POT on LCD display.  
 ##
+
+5. External Interrupt Switch Interfacing 
+- Detecting a switch press using external hardware interrupt and displaying status on LCD display.  
+##
