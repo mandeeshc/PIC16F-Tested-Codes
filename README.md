@@ -1,4 +1,4 @@
-# PIC16F-Tested-Codes
+# PIC16F877A-Tested-Codes
  Embedded Systems assignments done during M.Tech (Automotive Electronics 2023-2025)
 
 1. LED Interfacing 
